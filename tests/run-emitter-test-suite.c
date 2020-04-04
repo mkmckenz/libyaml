@@ -42,6 +42,7 @@ int main(int argc, char *argv[])
         char anchor[256];
         char tag[256];
         int implicit;
+        int style;
 
         if (strncmp(line, "+STR", 4) == 0) {
             ok = yaml_stream_start_event_initialize(&event, YAML_UTF8_ENCODING);
@@ -50,25 +51,31 @@ int main(int argc, char *argv[])
             ok = yaml_stream_end_event_initialize(&event);
         }
         else if (strncmp(line, "+DOC", 4) == 0) {
-            implicit = strncmp(line, "+DOC ---", 8) != 0;
+            implicit = strncmp(line+4, " ---", 4) != 0;
             ok = yaml_document_start_event_initialize(&event, NULL, NULL, NULL, implicit);
         }
         else if (strncmp(line, "-DOC", 4) == 0) {
-            implicit = strncmp(line, "-DOC ...", 8) != 0;
+            implicit = strncmp(line+4, " ...", 4) != 0;
             ok = yaml_document_end_event_initialize(&event, implicit);
         }
         else if (strncmp(line, "+MAP", 4) == 0) {
+            style = YAML_BLOCK_MAPPING_STYLE;
+            if (strncmp(line+5, "{}", 2) == 0)
+                style = YAML_FLOW_MAPPING_STYLE;
             ok = yaml_mapping_start_event_initialize(&event, (yaml_char_t *)
                                                      get_anchor('&', line, anchor), (yaml_char_t *)
-                                                     get_tag(line, tag), 0, YAML_BLOCK_MAPPING_STYLE);
+                                                     get_tag(line, tag), 0, style);
         }
         else if (strncmp(line, "-MAP", 4) == 0) {
             ok = yaml_mapping_end_event_initialize(&event);
         }
         else if (strncmp(line, "+SEQ", 4) == 0) {
+            style = YAML_BLOCK_SEQUENCE_STYLE;
+            if (strncmp(line+5, "[]", 2) == 0)
+                style = YAML_FLOW_SEQUENCE_STYLE;
             ok = yaml_sequence_start_event_initialize(&event, (yaml_char_t *)
                                                       get_anchor('&', line, anchor), (yaml_char_t *)
-                                                      get_tag(line, tag), 0, YAML_BLOCK_SEQUENCE_STYLE);
+                                                      get_tag(line, tag), 0, style);
         }
         else if (strncmp(line, "-SEQ", 4) == 0) {
             ok = yaml_sequence_end_event_initialize(&event);

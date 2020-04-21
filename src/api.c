@@ -48,8 +48,8 @@ yaml_malloc(size_t size)
 YAML_DECLARE(void *)
 yaml_realloc(void *ptr, size_t size)
 {
-    return ptr ? yaml_user_realloc(ptr, size ? size : 1) 
-	       : yaml_user_malloc(size ? size : 1);
+    return ptr ? yaml_user_realloc(ptr, size ? size : 1)
+               : yaml_user_malloc(size ? size : 1);
 }
 
 /*
@@ -70,7 +70,7 @@ YAML_DECLARE(yaml_char_t *)
 yaml_strdup(const yaml_char_t *str)
 {
     size_t size = str ? strlen((const char*)str) : 0;
-    void *cpy = (yaml_char_t*)yaml_malloc(size + 1);
+    yaml_char_t *cpy = (yaml_char_t*)yaml_malloc(size + 1);
     if (!cpy)
         return NULL;
 

@@ -1970,6 +1970,13 @@ yaml_emitter_flush(yaml_emitter_t *emitter);
 
 /** @} */
 
+/**
+ * Access to user defined malloc/realloc/free functions.
+ */
+extern void *(*yaml_user_malloc)(size_t size);
+extern void *(*yaml_user_realloc)(void *ptr, size_t size);
+extern void (*yaml_user_free)(void *ptr);
+
 #ifdef __cplusplus
 }
 #endif
